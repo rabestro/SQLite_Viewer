@@ -15,8 +15,8 @@ public class SQLiteViewer extends JFrame {
         dataBaseViewer = new DataBaseViewer();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 700);
-//        setResizable(false);
+        setSize(500, 300);
+        setResizable(false);
         setLocationRelativeTo(null);
         setTitle("SQLite Viewer");
         setLayout(null);

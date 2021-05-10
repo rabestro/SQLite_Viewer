@@ -35,8 +35,9 @@ public class DataBaseViewer {
         mainPanel.setLayout(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder(null, "Database Viewer", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         fileNameTextField = new JTextField();
-        fileNameTextField.setColumns(15);
-        fileNameTextField.setName("fileName");
+        fileNameTextField.setColumns(25);
+        fileNameTextField.setName("FileNameTextField");
+        fileNameTextField.setText("");
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -64,7 +65,8 @@ public class DataBaseViewer {
         gbc.insets = new Insets(5, 5, 5, 5);
         mainPanel.add(tablesComboBox, gbc);
         queryTextArea = new JTextArea();
-        queryTextArea.setColumns(20);
+        queryTextArea.setColumns(25);
+        queryTextArea.setLineWrap(false);
         queryTextArea.setMargin(new Insets(2, 2, 2, 2));
         queryTextArea.setName("QueryTextArea");
         queryTextArea.setRows(4);
@@ -93,5 +95,4 @@ public class DataBaseViewer {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
-
 }

@@ -16,7 +16,8 @@
         </constraints>
         <properties>
           <columns value="25"/>
-          <name value="fileName"/>
+          <name value="FileNameTextField"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="167d6" class="javax.swing.JButton" binding="openButton" default-binding="true">
