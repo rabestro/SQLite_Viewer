@@ -1,16 +1,49 @@
 package viewer.component;
 
+import org.sqlite.SQLiteDataSource;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import static java.lang.System.Logger.Level.INFO;
 
 public class DataBaseViewer {
+    private static final System.Logger LOGGER = System.getLogger("");
+
     private JPanel mainPanel;
     private JButton openButton;
     private JTextField fileNameTextField;
     private JComboBox tablesComboBox;
     private JTextArea queryTextArea;
     private JButton executeButton;
+
+    private Connection connection;
+
+    public DataBaseViewer() {
+        openButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                LOGGER.log(INFO, actionEvent);
+                final var url = "jdbc:sqlite:" + fileNameTextField.getText();
+                LOGGER.log(INFO, "URL: {0}", url);
+
+                final var dataSource = new SQLiteDataSource();
+                dataSource.setUrl(url);
+                try (Connection con = dataSource.getConnection()) {
+                    if (con.isValid(5)) {
+                        System.out.println("Connection is valid.");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     public JPanel getMainPanel() {
         return mainPanel;
