@@ -5,12 +5,8 @@ import org.sqlite.SQLiteDataSource;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static java.lang.System.Logger.Level.INFO;
 
@@ -22,39 +18,39 @@ public class DataBaseViewer {
     private JPanel mainPanel;
     private JButton openButton;
     private JTextField fileNameTextField;
-    private JComboBox tablesComboBox;
+    private JComboBox<String> tablesComboBox;
     private JTextArea queryTextArea;
     private JButton executeButton;
 
-    private Connection connection;
-
     public DataBaseViewer() {
-        openButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                LOGGER.log(INFO, actionEvent);
-                final var url = "jdbc:sqlite:" + fileNameTextField.getText();
-                LOGGER.log(INFO, "URL: {0}", url);
+        openButton.addActionListener(actionEvent -> {
+            LOGGER.log(INFO, actionEvent);
+            final var url = "jdbc:sqlite:" + fileNameTextField.getText();
+            LOGGER.log(INFO, "URL: {0}", url);
 
-                final var dataSource = new SQLiteDataSource();
-                dataSource.setUrl(url);
-                try (Connection con = dataSource.getConnection()) {
-                    if (con.isValid(5)) {
-                        System.out.println("Connection is valid.");
-                        try (Statement statement = con.createStatement()) {
-                            try (ResultSet tables = statement.executeQuery(SQL_PUBLIC_TABLES)) {
-                                while (tables.next()) {
-                                    final var name = tables.getString("name");
-                                    LOGGER.log(INFO, "Table: {0}", name);
+            final var dataSource = new SQLiteDataSource();
+            dataSource.setUrl(url);
+            try (final var connection = dataSource.getConnection()) {
+                if (connection.isValid(5)) {
+                    System.out.println("Connection is valid.");
+                    try (final var statement = connection.createStatement()) {
+                        try (final var tables = statement.executeQuery(SQL_PUBLIC_TABLES)) {
+                            queryTextArea.setText("");
+                            while (tables.next()) {
+                                final var name = tables.getString("name");
+                                tablesComboBox.addItem(name);
+                                LOGGER.log(INFO, "Table: {0}", name);
+                                if (queryTextArea.getText().isBlank()) {
+                                    queryTextArea.setText("SELECT * FROM " + name + ";");
                                 }
                             }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
                         }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         });
     }
