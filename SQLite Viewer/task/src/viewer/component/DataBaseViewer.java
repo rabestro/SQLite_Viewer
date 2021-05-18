@@ -5,6 +5,8 @@ import org.sqlite.SQLiteDataSource;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import static java.lang.System.Logger.Level.INFO;
@@ -59,6 +61,12 @@ public class DataBaseViewer {
             LOGGER.log(INFO, "Selected item: {0}", tablesComboBox.getSelectedItem());
             queryTextArea.setText("SELECT * FROM " + tablesComboBox.getSelectedItem() + ";");
         });
+        executeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                LOGGER.log(INFO, "Execute SQL: " + queryTextArea.getText());
+            }
+        });
     }
 
     public JPanel getMainPanel() {
@@ -82,7 +90,10 @@ public class DataBaseViewer {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createTitledBorder(null, "Database Viewer", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        mainPanel.setAutoscrolls(true);
+        mainPanel.setName("MainPanel");
+        mainPanel.setToolTipText("");
+        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-4473925)), "Database Viewer", TitledBorder.LEFT, TitledBorder.DEFAULT_POSITION, null, null));
         fileNameTextField = new JTextField();
         fileNameTextField.setColumns(25);
         fileNameTextField.setName("FileNameTextField");
@@ -138,6 +149,7 @@ public class DataBaseViewer {
         mainPanel.add(executeButton, gbc);
         tableData = new JTable();
         tableData.setName("Table");
+        tableData.setToolTipText("the data from a table");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 3;
