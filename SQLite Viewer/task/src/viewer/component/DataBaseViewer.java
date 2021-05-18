@@ -8,12 +8,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import static java.lang.System.Logger.Level.INFO;
 
 public class DataBaseViewer {
     private static final System.Logger LOGGER = System.getLogger("");
+    private static final String SQL_PUBLIC_TABLES =
+            "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';";
 
     private JPanel mainPanel;
     private JButton openButton;
@@ -37,6 +41,16 @@ public class DataBaseViewer {
                 try (Connection con = dataSource.getConnection()) {
                     if (con.isValid(5)) {
                         System.out.println("Connection is valid.");
+                        try (Statement statement = con.createStatement()) {
+                            try (ResultSet tables = statement.executeQuery(SQL_PUBLIC_TABLES)) {
+                                while (tables.next()) {
+                                    final var name = tables.getString("name");
+                                    LOGGER.log(INFO, "Table: {0}", name);
+                                }
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
