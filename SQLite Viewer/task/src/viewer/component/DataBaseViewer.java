@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+import static java.lang.System.Logger.Level.ERROR;
 import static java.lang.System.Logger.Level.INFO;
 
 public class DataBaseViewer {
@@ -24,14 +25,18 @@ public class DataBaseViewer {
     private JButton executeButton;
     private JTable tableData;
 
+    private SQLiteDataSource dataSource;
+
+//    private DataSource dataSource = new SQLiteDataSource();
+
     public DataBaseViewer() {
         openButton.addActionListener(actionEvent -> {
             LOGGER.log(INFO, actionEvent);
             final var url = "jdbc:sqlite:" + fileNameTextField.getText();
             LOGGER.log(INFO, "URL: {0}", url);
-
-            final var dataSource = new SQLiteDataSource();
+            dataSource = new SQLiteDataSource();
             dataSource.setUrl(url);
+
             try (final var connection = dataSource.getConnection()) {
                 if (connection.isValid(5)) {
                     System.out.println("Connection is valid.");
@@ -49,11 +54,11 @@ public class DataBaseViewer {
                             }
                         }
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        LOGGER.log(ERROR, e::getMessage);
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                LOGGER.log(ERROR, e::getMessage);
             }
         });
 
@@ -64,7 +69,19 @@ public class DataBaseViewer {
         executeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                LOGGER.log(INFO, "Execute SQL: " + queryTextArea.getText());
+                try (final var connection = dataSource.getConnection()) {
+                    LOGGER.log(INFO, "Execute SQL: " + queryTextArea.getText());
+                    try (final var statement = connection.prepareStatement(queryTextArea.getText())) {
+                        final var result = statement.executeQuery();
+                        LOGGER.log(INFO, "Columns: {0}, First: {1}",
+                                result.getMetaData().getColumnCount(),
+                                result.getMetaData().getColumnName(1));
+                    } catch (SQLException e) {
+                        LOGGER.log(ERROR, e::getMessage);
+                    }
+                } catch (SQLException e) {
+                    LOGGER.log(ERROR, e::getMessage);
+                }
             }
         });
     }
