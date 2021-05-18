@@ -5,7 +5,6 @@ import org.sqlite.SQLiteDataSource;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import static java.lang.System.Logger.Level.INFO;
@@ -36,13 +35,14 @@ public class DataBaseViewer {
                     try (final var statement = connection.createStatement()) {
                         try (final var tables = statement.executeQuery(SQL_PUBLIC_TABLES)) {
                             queryTextArea.setText("");
+                            tablesComboBox.removeAllItems();
                             while (tables.next()) {
                                 final var name = tables.getString("name");
                                 tablesComboBox.addItem(name);
                                 LOGGER.log(INFO, "Table: {0}", name);
-                                if (queryTextArea.getText().isBlank()) {
-                                    queryTextArea.setText("SELECT * FROM " + name + ";");
-                                }
+//                                if (queryTextArea.getText().isBlank()) {
+//                                    queryTextArea.setText("SELECT * FROM " + name + ";");
+//                                }
                             }
                         }
                     } catch (SQLException e) {
@@ -52,6 +52,11 @@ public class DataBaseViewer {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        });
+
+        tablesComboBox.addItemListener(e -> {
+            LOGGER.log(INFO, "Selected item: {0}", tablesComboBox.getSelectedItem());
+            queryTextArea.setText("SELECT * FROM " + tablesComboBox.getSelectedItem() + ";");
         });
     }
 
