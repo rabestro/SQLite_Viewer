@@ -20,6 +20,7 @@ public class DataBaseViewer {
     private JComboBox<String> tablesComboBox;
     private JTextArea queryTextArea;
     private JButton executeButton;
+    private JTable tableData;
 
     public DataBaseViewer() {
         openButton.addActionListener(actionEvent -> {
@@ -135,6 +136,14 @@ public class DataBaseViewer {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
         mainPanel.add(executeButton, gbc);
+        tableData = new JTable();
+        tableData.setName("Table");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        mainPanel.add(tableData, gbc);
     }
 
     /**
@@ -143,4 +152,6 @@ public class DataBaseViewer {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
+
 }
