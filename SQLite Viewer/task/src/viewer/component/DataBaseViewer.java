@@ -10,6 +10,8 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Vector;
@@ -38,6 +40,10 @@ public class DataBaseViewer {
     public DataBaseViewer() {
         openButton.addActionListener(actionEvent -> {
             LOGGER.log(INFO, actionEvent);
+            if (!Files.isReadable(Path.of(fileNameTextField.getText()))) {
+                JOptionPane.showMessageDialog(new Frame(), "File doesn't exist!");
+                return;
+            }
             final var url = "jdbc:sqlite:" + fileNameTextField.getText();
             LOGGER.log(INFO, "URL: {0}", url);
             dataSource = new SQLiteDataSource();
