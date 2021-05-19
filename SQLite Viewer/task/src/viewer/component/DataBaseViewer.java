@@ -5,7 +5,6 @@ import org.sqlite.SQLiteDataSource;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
@@ -13,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.Locale;
+import java.util.Vector;
 
 import static java.lang.System.Logger.Level.ERROR;
 import static java.lang.System.Logger.Level.INFO;
@@ -82,9 +82,21 @@ public class DataBaseViewer {
                         LOGGER.log(INFO, "Columns: {0}, First: {1}",
                                 result.getMetaData().getColumnCount(),
                                 result.getMetaData().getColumnName(1));
-                        final var tableModel = new DefaultTableModel(0, 0);
-                        tableModel.addColumn(result.getMetaData().getColumnName(1));
-                        tableModel.addColumn(result.getMetaData().getColumnName(2));
+                        final var metaData = result.getMetaData();
+
+                        final var columns = new Vector<String>(metaData.getColumnCount());
+                        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                            columns.add(metaData.getColumnName(i));
+                        }
+                        final var data = new Vector<Vector<Object>>();
+                        while (result.next()) {
+                            final var row = new Vector<>(metaData.getColumnCount());
+                            for (int i = 1; i <= metaData.getColumnCount(); ++i) {
+                                row.add(result.getObject(i));
+                            }
+                            data.add(row);
+                        }
+                        final var tableModel = new DefaultTableModel(data, columns);
                         tableData.setModel(tableModel);
                     } catch (SQLException e) {
                         LOGGER.log(ERROR, e::getMessage);
