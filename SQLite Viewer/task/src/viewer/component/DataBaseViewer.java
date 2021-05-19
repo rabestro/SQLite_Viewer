@@ -161,6 +161,7 @@ public class DataBaseViewer {
         gbc.insets = new Insets(5, 5, 5, 5);
         mainPanel.add(openButton, gbc);
         tablesComboBox = new JComboBox();
+        tablesComboBox.setEnabled(true);
         tablesComboBox.setName("TablesComboBox");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -171,6 +172,7 @@ public class DataBaseViewer {
         mainPanel.add(tablesComboBox, gbc);
         queryTextArea = new JTextArea();
         queryTextArea.setColumns(25);
+        queryTextArea.setEnabled(false);
         queryTextArea.setLineWrap(false);
         queryTextArea.setMargin(new Insets(2, 2, 2, 2));
         queryTextArea.setName("QueryTextArea");
@@ -182,6 +184,7 @@ public class DataBaseViewer {
         gbc.insets = new Insets(5, 5, 5, 5);
         mainPanel.add(queryTextArea, gbc);
         executeButton = new JButton();
+        executeButton.setEnabled(false);
         executeButton.setName("ExecuteQueryButton");
         executeButton.setText("Execute");
         executeButton.setVerticalAlignment(0);
@@ -193,6 +196,7 @@ public class DataBaseViewer {
         gbc.insets = new Insets(5, 5, 5, 5);
         mainPanel.add(executeButton, gbc);
         tableScrollPane = new JScrollPane();
+        tableScrollPane.setEnabled(true);
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -201,6 +205,7 @@ public class DataBaseViewer {
         mainPanel.add(tableScrollPane, gbc);
         tableScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-4473925)), "Table data", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, -1, -1, tableScrollPane.getFont()), null));
         tableData = new JTable();
+        tableData.setEnabled(true);
         tableData.setName("Table");
         tableData.setToolTipText("the data from a table");
         tableScrollPane.setViewportView(tableData);
