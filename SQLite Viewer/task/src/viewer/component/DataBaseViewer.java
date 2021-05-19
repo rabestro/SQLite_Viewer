@@ -5,6 +5,8 @@ import org.sqlite.SQLiteDataSource;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -27,6 +29,7 @@ public class DataBaseViewer {
     private JTextArea queryTextArea;
     private JButton executeButton;
     private JTable tableData;
+    private JScrollPane tableScrollPane;
 
     private SQLiteDataSource dataSource;
 
@@ -79,6 +82,10 @@ public class DataBaseViewer {
                         LOGGER.log(INFO, "Columns: {0}, First: {1}",
                                 result.getMetaData().getColumnCount(),
                                 result.getMetaData().getColumnName(1));
+                        final var tableModel = new DefaultTableModel(0, 0);
+                        tableModel.addColumn(result.getMetaData().getColumnName(1));
+                        tableModel.addColumn(result.getMetaData().getColumnName(2));
+                        tableData.setModel(tableModel);
                     } catch (SQLException e) {
                         LOGGER.log(ERROR, e::getMessage);
                     }
@@ -167,18 +174,18 @@ public class DataBaseViewer {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
         mainPanel.add(executeButton, gbc);
-        final JScrollPane scrollPane1 = new JScrollPane();
+        tableScrollPane = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        mainPanel.add(scrollPane1, gbc);
-        scrollPane1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-4473925)), "Table data", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, -1, -1, scrollPane1.getFont()), null));
+        mainPanel.add(tableScrollPane, gbc);
+        tableScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-4473925)), "Table data", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, -1, -1, tableScrollPane.getFont()), null));
         tableData = new JTable();
         tableData.setName("Table");
         tableData.setToolTipText("the data from a table");
-        scrollPane1.setViewportView(tableData);
+        tableScrollPane.setViewportView(tableData);
     }
 
     /**
