@@ -60,9 +60,6 @@ public class DataBaseViewer {
                                 final var name = tables.getString("name");
                                 tablesComboBox.addItem(name);
                                 LOGGER.log(INFO, "Table: {0}", name);
-//                                if (queryTextArea.getText().isBlank()) {
-//                                    queryTextArea.setText("SELECT * FROM " + name + ";");
-//                                }
                             }
                         }
                     } catch (SQLException e) {
@@ -77,39 +74,39 @@ public class DataBaseViewer {
         tablesComboBox.addItemListener(e -> {
             LOGGER.log(INFO, "Selected item: {0}", tablesComboBox.getSelectedItem());
             queryTextArea.setText("SELECT * FROM " + tablesComboBox.getSelectedItem() + ";");
+            queryTextArea.setEnabled(true);
+            executeButton.setEnabled(true);
         });
-        executeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                try (final var connection = dataSource.getConnection()) {
-                    LOGGER.log(INFO, "Execute SQL: " + queryTextArea.getText());
-                    try (final var statement = connection.prepareStatement(queryTextArea.getText())) {
-                        final var result = statement.executeQuery();
-                        LOGGER.log(INFO, "Columns: {0}, First: {1}",
-                                result.getMetaData().getColumnCount(),
-                                result.getMetaData().getColumnName(1));
-                        final var metaData = result.getMetaData();
 
-                        final var columns = new Vector<String>(metaData.getColumnCount());
-                        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                            columns.add(metaData.getColumnName(i));
-                        }
-                        final var data = new Vector<Vector<Object>>();
-                        while (result.next()) {
-                            final var row = new Vector<>(metaData.getColumnCount());
-                            for (int i = 1; i <= metaData.getColumnCount(); ++i) {
-                                row.add(result.getObject(i));
-                            }
-                            data.add(row);
-                        }
-                        final var tableModel = new DefaultTableModel(data, columns);
-                        tableData.setModel(tableModel);
-                    } catch (SQLException e) {
-                        LOGGER.log(ERROR, e::getMessage);
+        executeButton.addActionListener(actionEvent -> {
+            try (final var connection = dataSource.getConnection()) {
+                LOGGER.log(INFO, "Execute SQL: " + queryTextArea.getText());
+                try (final var statement = connection.prepareStatement(queryTextArea.getText())) {
+                    final var result = statement.executeQuery();
+                    LOGGER.log(INFO, "Columns: {0}, First: {1}",
+                            result.getMetaData().getColumnCount(),
+                            result.getMetaData().getColumnName(1));
+                    final var metaData = result.getMetaData();
+
+                    final var columns = new Vector<String>(metaData.getColumnCount());
+                    for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                        columns.add(metaData.getColumnName(i));
                     }
+                    final var data = new Vector<Vector<Object>>();
+                    while (result.next()) {
+                        final var row = new Vector<>(metaData.getColumnCount());
+                        for (int i = 1; i <= metaData.getColumnCount(); ++i) {
+                            row.add(result.getObject(i));
+                        }
+                        data.add(row);
+                    }
+                    final var tableModel = new DefaultTableModel(data, columns);
+                    tableData.setModel(tableModel);
                 } catch (SQLException e) {
                     LOGGER.log(ERROR, e::getMessage);
                 }
+            } catch (SQLException e) {
+                LOGGER.log(ERROR, e::getMessage);
             }
         });
     }
@@ -172,6 +169,7 @@ public class DataBaseViewer {
         mainPanel.add(tablesComboBox, gbc);
         queryTextArea = new JTextArea();
         queryTextArea.setColumns(25);
+        queryTextArea.setEditable(true);
         queryTextArea.setEnabled(false);
         queryTextArea.setLineWrap(false);
         queryTextArea.setMargin(new Insets(2, 2, 2, 2));

@@ -55,6 +55,7 @@
         </constraints>
         <properties>
           <columns value="25"/>
+          <editable value="true"/>
           <enabled value="false"/>
           <lineWrap value="false"/>
           <margin top="2" left="2" bottom="2" right="2"/>
