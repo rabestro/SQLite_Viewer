@@ -42,6 +42,8 @@ public class DataBaseViewer {
             LOGGER.log(INFO, actionEvent);
             if (!Files.isReadable(Path.of(fileNameTextField.getText()))) {
                 JOptionPane.showMessageDialog(new Frame(), "File doesn't exist!");
+                queryTextArea.setEnabled(false);
+                executeButton.setEnabled(false);
                 return;
             }
             final var url = "jdbc:sqlite:" + fileNameTextField.getText();
