@@ -8,11 +8,9 @@ import static java.lang.System.Logger.Level.INFO;
 
 public class SQLiteViewer extends JFrame {
     private static final System.Logger LOGGER = System.getLogger("");
-    private final DataBaseViewer dataBaseViewer;
 
-    public SQLiteViewer() {
-        LOGGER.log(INFO, "SQLiteViewer started");
-        dataBaseViewer = new DataBaseViewer();
+    {
+        var dataBaseViewer = new DataBaseViewer();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 600);
@@ -23,6 +21,10 @@ public class SQLiteViewer extends JFrame {
         setContentPane(dataBaseViewer.getMainPanel());
         pack();
         setVisible(true);
+    }
+
+    public SQLiteViewer() {
+        LOGGER.log(INFO, "SQLiteViewer started");
     }
 
 }
